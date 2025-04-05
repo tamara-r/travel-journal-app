@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_journal/common/widgets/custom_button.dart';
 import 'package:travel_journal/core/routes/app_routes.dart';
 import 'package:travel_journal/core/utils/form_validators.dart';
 import 'package:travel_journal/features/auth/controller/auth_controller.dart';
@@ -61,8 +62,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 );
               },
               onError: (error) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(error)));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(error)),
+                );
               },
             );
       } else {
@@ -82,10 +84,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final password = _passwordController.text;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sign Up"),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Form(
@@ -93,7 +91,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
+              Center(
+                child: Image.asset(
+                  'assets/images/map.png',
+                  height: 160,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Center(
+                child: Text(
+                  "Sign Up",
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              const SizedBox(height: 32),
               CustomTextField(
                 label: "Full Name",
                 controller: _fullNameController,
@@ -159,14 +171,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _register,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text("Sign Up"),
+              CustomButton(
+                onPressed: _register,
+                isLoading: _isLoading,
+                text: "Sign Up",
               ),
               const SizedBox(height: 16),
               Row(

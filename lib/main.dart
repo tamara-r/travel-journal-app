@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:travel_journal/config/theme/app_theme.dart';
 import 'package:travel_journal/core/routes/app_routes.dart';
 import 'package:travel_journal/features/auth/controller/auth_controller.dart';
-import 'package:travel_journal/features/auth/presentation/auth_wrapper.dart';
 import 'package:travel_journal/features/auth/presentation/login_screen.dart';
 import 'package:travel_journal/features/home/presentation/home_screen.dart';
 import 'firebase_options.dart';
@@ -39,10 +39,11 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Travel Journal',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      // TODO: Uncomment the following lines to use dark theme
+      // darkTheme: AppTheme.darkTheme,
+      // themeMode: ThemeMode.system,
+
       onGenerateRoute: AppRoutes.onGenerateRoute,
       home: child,
     );

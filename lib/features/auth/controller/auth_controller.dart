@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_journal/features/auth/domain/auth_repository.dart';
 import 'package:travel_journal/features/auth/domain/user_model.dart';
-import 'package:travel_journal/features/auth/provider/auth_provider.dart';
+import 'package:travel_journal/features/auth/domain/provider/auth_provider.dart';
 
 /// This controller manages the authentication state of the user.
 /// It uses the AuthRepository to perform authentication operations

@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_journal/common/widgets/custom_button.dart';
 import 'package:travel_journal/core/routes/app_routes.dart';
 import 'package:travel_journal/core/utils/form_validators.dart';
 import 'package:travel_journal/features/auth/controller/auth_controller.dart';
 import 'package:travel_journal/common/widgets/custom_text_field.dart';
 import 'package:travel_journal/common/widgets/password_visibility_toggle.dart';
-import 'package:travel_journal/features/auth/provider/auth_error_provider.dart';
+import 'package:travel_journal/features/auth/domain/provider/auth_error_provider.dart';
+import 'package:travel_journal/features/auth/presentation/widgets/forgot_password_bottom_sheet.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -71,13 +73,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authErrorMessage = ref.watch(authErrorProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Sign In")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 32),
+              Center(
+                child: Image.asset(
+                  'assets/images/map.png',
+                  height: 160,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Center(
+                child: Text(
+                  "Sign In",
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              const SizedBox(height: 32),
               CustomTextField(
                 label: "Email",
                 controller: _emailController,
@@ -102,15 +119,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
               ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _login,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => const ForgotPasswordBottomSheet(),
+                    );
+                  },
+                  child: const Text("Forgot password?"),
                 ),
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text("Sign In"),
+              ),
+              const SizedBox(height: 8),
+              CustomButton(
+                onPressed: _login,
+                isLoading: _isLoading,
+                text: "Sign In",
               ),
               if (authErrorMessage != null) ...[
                 const SizedBox(height: 16),
@@ -120,6 +148,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: Colors.red,
                     fontWeight: FontWeight.w600,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ],
               const SizedBox(height: 16),
