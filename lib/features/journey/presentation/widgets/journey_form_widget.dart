@@ -9,6 +9,7 @@ import 'package:travel_journal/features/journey/data/country_details_service.dar
 import 'package:travel_journal/features/journey/domain/models/country_model.dart';
 import 'package:travel_journal/features/journey/domain/models/journey_model.dart';
 import 'package:travel_journal/features/journey/presentation/widgets/country_picker_field.dart';
+import 'package:travel_journal/features/journey/presentation/widgets/gallery_urls_input.dart';
 import 'package:travel_journal/features/journey/presentation/widgets/tags_input_widget.dart';
 
 class JourneyForm extends ConsumerStatefulWidget {
@@ -34,7 +35,10 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
   final _titleController = TextEditingController();
   final _placeController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _featuredImageController = TextEditingController();
+
   List<String> _tags = [];
+  List<String> _galleryUrls = [];
   CountryModel? _selectedCountry;
   bool _isPublic = false;
 
@@ -48,6 +52,8 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
       _descriptionController.text = j.description;
       _tags = j.tags;
       _isPublic = j.isPublic;
+      _featuredImageController.text = j.featuredImage;
+      _galleryUrls = j.gallery;
     }
   }
 
@@ -61,6 +67,8 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
       return;
     }
 
+    final user = ref.read(authControllerProvider).value;
+
     final journey = JourneyModel(
       id: widget.initialJourney?.id,
       title: _titleController.text.trim(),
@@ -68,20 +76,10 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
       place: _placeController.text.trim(),
       description: _descriptionController.text.trim(),
       tags: _tags,
-      featuredImage: 'assets/images/demo_featured_image.jpg',
-      gallery: [
-        'assets/images/demo_gallery_1.jpg',
-        'assets/images/demo_gallery_2.jpg',
-        'assets/images/demo_gallery_3.jpg',
-        'assets/images/demo_gallery_4.jpg',
-        'assets/images/demo_gallery_5.jpg',
-        'assets/images/demo_gallery_6.jpg',
-        'assets/images/demo_gallery_7.jpg',
-      ],
+      featuredImage: _featuredImageController.text.trim(),
+      gallery: _galleryUrls,
       isPublic: _isPublic,
-      userId: widget.initialJourney?.userId ??
-          ref.read(authControllerProvider).value?.uid ??
-          '',
+      userId: widget.initialJourney?.userId ?? user?.uid ?? '',
       map: _selectedCountry != null
           ? {
               'continent': _selectedCountry?.region,
@@ -92,8 +90,7 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
               'map': _selectedCountry?.mapUrl,
               'currency': _selectedCountry?.currency,
               'languages': _selectedCountry?.languages,
-              'authorName':
-                  ref.read(authControllerProvider).value?.fullName ?? '',
+              'authorName': user?.fullName ?? '',
             }
           : widget.initialJourney?.map,
     );
@@ -119,10 +116,7 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
             onSelect: (country) async {
               final details =
                   await CountryDetailsService.fetchByCode(country.countryCode);
-
-              setState(() {
-                _selectedCountry = details;
-              });
+              setState(() => _selectedCountry = details);
             },
           ),
           const SizedBox(height: 16),
@@ -138,6 +132,20 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
             maxLines: 4,
             validator: (v) =>
                 FormValidators.validateRequiredField(v, "Description"),
+          ),
+          const SizedBox(height: 16),
+          CustomTextField(
+            label: "Featured Image URL",
+            controller: _featuredImageController,
+            validator: (v) => FormValidators.validateRequiredField(
+              v,
+              "Featured image URL",
+            ),
+          ),
+          const SizedBox(height: 16),
+          GalleryUrlsInput(
+            initialUrls: _galleryUrls,
+            onChanged: (updated) => setState(() => _galleryUrls = updated),
           ),
           const SizedBox(height: 24),
           TagsInput(
@@ -155,7 +163,7 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
             text: widget.submitLabel,
             isLoading: widget.isLoading,
             onPressed: widget.isLoading ? null : _submit,
-          )
+          ),
         ],
       ),
     );
@@ -166,6 +174,7 @@ class _JourneyFormState extends ConsumerState<JourneyForm> {
     _titleController.dispose();
     _placeController.dispose();
     _descriptionController.dispose();
+    _featuredImageController.dispose();
     super.dispose();
   }
 }

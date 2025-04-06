@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travel_journal/features/auth/controller/auth_controller.dart';
 import 'package:travel_journal/core/routes/app_routes.dart';
+import 'package:travel_journal/features/auth/controller/auth_controller.dart';
+import 'package:travel_journal/features/home/domain/utils/journeys_by_continent.dart';
+import 'package:travel_journal/features/home/presentation/widgets/journey_card.dart';
 import 'package:travel_journal/features/journey/domain/provider/journey_list_provider.dart';
 import 'package:travel_journal/features/journey/presentation/screens/journey_details_screen.dart';
 
@@ -14,7 +16,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("Travel Journal"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -31,40 +33,36 @@ class HomeScreen extends ConsumerWidget {
             return const Center(child: Text("No journeys yet."));
           }
 
-          return ListView.builder(
+          final grouped = groupJourneysByContinent(journeys);
+
+          return ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: journeys.length,
-            itemBuilder: (context, index) {
-              final journey = journeys[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                child: ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      journey.featuredImage,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  title: Text(journey.title),
-                  subtitle: Text('${journey.place}, ${journey.country}'),
-                  trailing:
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => JourneyDetailsScreen(journey: journey),
-                      ),
-                    );
-                  },
-                ),
+            children: grouped.entries.map((entry) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(entry.key,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  ...entry.value.map((journey) => JourneyCard(
+                        journey: journey,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  JourneyDetailsScreen(journey: journey),
+                            ),
+                          );
+                        },
+                      )),
+                  const SizedBox(height: 24),
+                ],
               );
-            },
+            }).toList(),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

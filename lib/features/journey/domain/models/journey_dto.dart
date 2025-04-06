@@ -19,6 +19,9 @@ class JourneyDto {
     if (journey.map != null && journey.map!.isNotEmpty) {
       map['map'] = journey.map;
     }
+    if (journey.authorName != null && journey.authorName!.isNotEmpty) {
+      map['authorName'] = journey.authorName;
+    }
 
     return map;
   }
@@ -35,6 +38,7 @@ class JourneyDto {
       gallery: List<String>.from(map['gallery'] ?? []),
       isPublic: map['isPublic'],
       userId: map['userId'],
+      authorName: map['authorName'],
       map: map['map'] ?? {},
     );
   }

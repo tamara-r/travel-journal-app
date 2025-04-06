@@ -54,9 +54,10 @@ class _ImageGallerySliderState extends State<ImageGallerySlider> {
                   child: AnimatedScale(
                     scale: _currentIndex == index ? 1 : 0.95,
                     duration: const Duration(milliseconds: 300),
-                    child: Image.asset(
+                    child: Image.network(
                       widget.images[index],
                       fit: BoxFit.contain,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
                 );

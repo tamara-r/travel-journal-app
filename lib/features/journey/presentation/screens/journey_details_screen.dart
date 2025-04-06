@@ -65,11 +65,10 @@ class JourneyDetailsScreen extends ConsumerWidget {
             // Featured image
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
+              child: _buildImage(
                 journey.featuredImage,
-                height: 200,
+                height: 400,
                 width: double.infinity,
-                fit: BoxFit.cover,
               ),
             ),
 
@@ -202,6 +201,7 @@ class JourneyDetailsScreen extends ConsumerWidget {
                 itemCount: journey.gallery.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
+                  final imageUrl = journey.gallery[index];
                   return GestureDetector(
                     onTap: () {
                       showDialog(
@@ -214,12 +214,7 @@ class JourneyDetailsScreen extends ConsumerWidget {
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        journey.gallery[index],
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      child: _buildImage(imageUrl, height: 100, width: 100),
                     ),
                   );
                 },
@@ -240,6 +235,23 @@ class JourneyDetailsScreen extends ConsumerWidget {
         Text(value, style: AppTextStyles.bodyMedium),
       ],
     );
+  }
+
+  Widget _buildImage(String path, {double? height, double? width}) {
+    final isNetwork = path.startsWith('http') || path.startsWith('https');
+    return isNetwork
+        ? Image.network(
+            path,
+            height: height,
+            width: width,
+            fit: BoxFit.cover,
+          )
+        : Image.asset(
+            path,
+            height: height,
+            width: width,
+            fit: BoxFit.cover,
+          );
   }
 
   void _showDeleteDialog(BuildContext context, WidgetRef ref) {
@@ -265,7 +277,6 @@ class JourneyDetailsScreen extends ConsumerWidget {
 
             Navigator.pop(context); // Close the dialog
 
-            // navigate to home screen
             Navigator.of(context).pushNamedAndRemoveUntil(
               '/home',
               (route) => false,
