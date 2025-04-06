@@ -62,4 +62,12 @@ class FormValidators {
   static bool hasSpecialChar(String input) =>
       input.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
   static bool hasMinLength(String input, int min) => input.length >= min;
+
+  // --- Validate Required Fields ---
+  static String? validateRequiredField(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
 }

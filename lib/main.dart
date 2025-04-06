@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:travel_journal/app/navigation/main_navigation_screen.dart';
 import 'package:travel_journal/config/theme/app_theme.dart';
 import 'package:travel_journal/core/routes/app_routes.dart';
 import 'package:travel_journal/features/auth/controller/auth_controller.dart';
 import 'package:travel_journal/features/auth/presentation/login_screen.dart';
-import 'package:travel_journal/features/home/presentation/home_screen.dart';
+// import 'package:travel_journal/features/home/presentation/home_screen.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -31,7 +32,7 @@ class MyApp extends ConsumerWidget {
       );
     } else if (authState.hasValue) {
       final user = authState.value;
-      child = user == null ? const LoginScreen() : const HomeScreen();
+      child = user == null ? const LoginScreen() : const MainNavigationScreen();
     } else {
       child = const LoginScreen();
     }

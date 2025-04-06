@@ -1,55 +1,59 @@
 class JourneyModel {
-  final String id;
+  final String? id;
   final String title;
-  final String country;
-  final String? place; // opcionalno ako želiš dodatnu preciznost
   final String description;
+  final String country;
+  final String place;
   final List<String> tags;
   final String featuredImage;
   final List<String> gallery;
   final bool isPublic;
-  final Map<String, dynamic>
-      location; // možeš kasnije zameniti konkretnom klasom
+  final String userId;
+  final String? authorName;
+  final Map<String, dynamic>? map;
 
   JourneyModel({
-    required this.id,
+    this.id,
     required this.title,
-    required this.country,
-    this.place,
     required this.description,
+    required this.country,
+    required this.place,
     required this.tags,
     required this.featuredImage,
     required this.gallery,
     required this.isPublic,
-    required this.location,
+    required this.userId,
+    this.authorName,
+    this.map,
   });
 
-  factory JourneyModel.fromMap(Map<String, dynamic> map, String documentId) {
+  JourneyModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? country,
+    String? place,
+    List<String>? tags,
+    String? featuredImage,
+    List<String>? gallery,
+    bool? isPublic,
+    String? userId,
+    String? authorName,
+    Map<String, dynamic>? map,
+  }) {
     return JourneyModel(
-      id: documentId,
-      title: map['title'] ?? '',
-      country: map['country'] ?? '',
-      place: map['place'],
-      description: map['description'] ?? '',
-      tags: List<String>.from(map['tags'] ?? []),
-      featuredImage: map['featuredImage'] ?? '',
-      gallery: List<String>.from(map['gallery'] ?? []),
-      isPublic: map['isPublic'] ?? false,
-      location: map['location'] ?? {},
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      country: country ?? this.country,
+      place: place ?? this.place,
+      tags: tags ?? this.tags,
+      featuredImage: featuredImage ?? this.featuredImage,
+      gallery: gallery ?? this.gallery,
+      isPublic: isPublic ?? this.isPublic,
+      userId: userId ?? this.userId,
+      authorName: authorName ?? this.authorName,
+      map: map ?? this.map,
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'country': country,
-      'place': place,
-      'description': description,
-      'tags': tags,
-      'featuredImage': featuredImage,
-      'gallery': gallery,
-      'isPublic': isPublic,
-      'location': location,
-    };
   }
 }

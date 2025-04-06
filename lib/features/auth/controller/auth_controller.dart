@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_journal/features/auth/domain/auth_repository.dart';
+import 'package:travel_journal/features/auth/domain/provider/user_provider.dart';
 import 'package:travel_journal/features/auth/domain/user_model.dart';
 import 'package:travel_journal/features/auth/domain/provider/auth_provider.dart';
 
@@ -50,10 +52,21 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
         password: password,
         phoneNumber: phoneNumber,
       );
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userModel = UserModel(
+          uid: currentUser.uid,
+          fullName: fullName,
+          email: email,
+          phoneNumber: phoneNumber,
+          profileImageUrl: null,
+        );
+        await _ref.read(userRepositoryProvider).createUser(userModel);
+        state = AsyncValue.data(userModel);
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
-
-      /// rethrow the error to be handled in the UI
       rethrow;
     }
   }

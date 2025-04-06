@@ -23,7 +23,7 @@ class CustomButton extends StatelessWidget {
             .textTheme
             .bodyMedium
             ?.copyWith(fontWeight: FontWeight.w600),
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
